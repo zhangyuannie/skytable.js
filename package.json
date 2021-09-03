@@ -1,5 +1,5 @@
 {
-  "name": "skytable",
+  "name": "skytable.js",
   "version": "0.0.0",
   "description": "Skytable client for Node.js",
   "main": "dist/mod.js",
