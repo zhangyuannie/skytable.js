@@ -12,7 +12,7 @@
     "node": ">=12"
   },
   "dependencies": {
-    "typeddeque": "^0.1.0"
+    "typeddeque": "^0.2.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.15.0",
