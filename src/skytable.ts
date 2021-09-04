@@ -55,6 +55,18 @@ export class Skytable {
     }
   }
 
+  async exists(...keys: string[]): Promise<number> {
+    const action = createAction(["EXISTS", ...keys]);
+    const query = createQuery([action]);
+    const elem = await this.query(query);
+    switch (elem.kind) {
+      case "int":
+        return elem.value;
+      default:
+        throw new ProtocolError("bad data type");
+    }
+  }
+
   async flushdb(entity?: string): Promise<true> {
     const action = createAction(entity ? ["FLUSHDB", entity] : ["FLUSHDB"]);
     const query = createQuery([action]);
@@ -72,18 +84,6 @@ export class Skytable {
     }
   }
 
-  async exists(...keys: string[]): Promise<number> {
-    const action = createAction(["EXISTS", ...keys]);
-    const query = createQuery([action]);
-    const elem = await this.query(query);
-    switch (elem.kind) {
-      case "int":
-        return elem.value;
-      default:
-        throw new ProtocolError("bad data type");
-    }
-  }
-
   async get(key: string): Promise<string | undefined> {
     const action = createAction(["GET", key]);
     const query = createQuery([action]);
@@ -91,6 +91,36 @@ export class Skytable {
     switch (elem.kind) {
       case "string":
         return decoder.decode(elem.value);
+      case "response_code":
+        if (elem.code === ResponseCodeNumber.Nil) {
+          return undefined;
+        }
+        throw new SkyhashError(elem.code);
+      default:
+        throw new ProtocolError("bad data type");
+    }
+  }
+
+  async heya(): Promise<true> {
+    const elem = await this.query(createQuery([createAction(["HEYA"])]));
+    switch (elem.kind) {
+      case "string":
+        if (decoder.decode(elem.value) !== "HEY!") {
+          throw new ProtocolError(`Expected 'HEY!' but received ${elem.value}`);
+        }
+        return true;
+      default:
+        throw new ProtocolError("bad data type");
+    }
+  }
+
+  async keylen(key: string): Promise<number | undefined> {
+    const action = createAction(["KEYLEN", key]);
+    const query = createQuery([action]);
+    const elem = await this.query(query);
+    switch (elem.kind) {
+      case "int":
+        return elem.value;
       case "response_code":
         if (elem.code === ResponseCodeNumber.Nil) {
           return undefined;
