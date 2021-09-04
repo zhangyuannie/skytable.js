@@ -1,7 +1,7 @@
 import { createAction, createQuery, Query } from "./query";
 import { createConnection, Socket } from "net";
 import { BufferParser } from "./_parser";
-import { NotImplementedError, SkyhashError } from "./errors";
+import { NotImplementedError, ProtocolError, SkyhashError } from "./errors";
 import { ResponseCodeNumber } from "./skyhash_types";
 import { decoder } from "./_util";
 
@@ -39,7 +39,7 @@ export class Skytable {
       case "int":
         return elem.value;
       default:
-        throw new NotImplementedError("Bad data type received");
+        throw new ProtocolError("bad data type");
     }
   }
 
@@ -51,7 +51,7 @@ export class Skytable {
       case "int":
         return elem.value;
       default:
-        throw new NotImplementedError("Bad data type received");
+        throw new ProtocolError("bad data type");
     }
   }
 
@@ -68,7 +68,7 @@ export class Skytable {
             throw new SkyhashError(elem.code);
         }
       default:
-        throw new NotImplementedError("Bad data type received");
+        throw new ProtocolError("bad data type");
     }
   }
 
@@ -80,7 +80,7 @@ export class Skytable {
       case "int":
         return elem.value;
       default:
-        throw new NotImplementedError("Bad data type received");
+        throw new ProtocolError("bad data type");
     }
   }
 
@@ -97,7 +97,7 @@ export class Skytable {
         }
         throw new SkyhashError(elem.code);
       default:
-        throw new NotImplementedError("Bad data type received");
+        throw new ProtocolError("bad data type");
     }
   }
 
@@ -116,7 +116,7 @@ export class Skytable {
             throw new SkyhashError(elem.code);
         }
       default:
-        throw new NotImplementedError("Bad data type received");
+        throw new ProtocolError("bad data type");
     }
   }
 
@@ -135,7 +135,7 @@ export class Skytable {
             throw new SkyhashError(elem.code);
         }
       default:
-        throw new NotImplementedError("Bad data type received");
+        throw new ProtocolError("bad data type");
     }
   }
 
@@ -155,7 +155,7 @@ export class Skytable {
       case "int":
         return elem.value;
       default:
-        throw new NotImplementedError("Bad data type received");
+        throw new ProtocolError("bad data type");
     }
   }
 }

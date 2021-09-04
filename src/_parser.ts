@@ -1,5 +1,5 @@
 import { Uint8Deque } from "typeddeque";
-import { NotImplementedError } from "./errors";
+import { NotImplementedError, ProtocolError } from "./errors";
 import {
   createInt,
   createResponseCode,
@@ -36,11 +36,11 @@ export class BufferParser {
     if (this.#buffer.length < 5) return;
     this.#offset = 0;
     if (this.#buffer.at(0) !== star) {
-      throw new NotImplementedError("Bad packet handling");
+      throw new ProtocolError("metaframe does not start with '*'");
     }
     this.#offset++;
 
-    const c = this._parseNumber();
+    const c = this._parseLength();
     if (c == null) return;
     if (c !== 1) throw new NotImplementedError("Batch query");
 
@@ -68,7 +68,7 @@ export class BufferParser {
     const tsymbol = this.#buffer.at(this.#offset);
     this.#offset++;
 
-    const length = this._parseNumber();
+    const length = this._parseLength();
     if (length == null) return null;
 
     switch (tsymbol) {
@@ -103,11 +103,16 @@ export class BufferParser {
     return ret;
   }
 
-  private _parseNumber(): number | null {
+  private _parseLength(): number | null {
     const idx = this.#buffer.indexOf(newline, this.#offset);
     if (idx < 0) return null;
 
     const ret = +decoder.decode(this.#buffer.slice(this.#offset, idx));
+
+    if (!Number.isInteger(ret)) {
+      throw new ProtocolError("length is not an integer");
+    }
+
     this.#offset = idx + 1;
     return ret;
   }

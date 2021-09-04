@@ -13,3 +13,10 @@ export class SkyhashError extends Error {
     this.code = code;
   }
 }
+
+export class ProtocolError extends Error {
+  override readonly name = "ProtocolError";
+  constructor(message?: string) {
+    super(message);
+  }
+}
