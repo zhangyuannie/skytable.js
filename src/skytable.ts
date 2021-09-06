@@ -131,6 +131,49 @@ export class Skytable {
     }
   }
 
+  async lskeys(limit: number): Promise<(string | null)[]>;
+  async lskeys(entity: string): Promise<(string | null)[]>;
+  async lskeys(entity: string, limit: number): Promise<(string | null)[]>;
+  async lskeys(...args: unknown[]): Promise<(string | null)[]> {
+    const action = createAction(["LSKEYS", ...args.map((s) => "" + s)]);
+    const query = createQuery([action]);
+    const elem = await this.query(query);
+    switch (elem.kind) {
+      case "string_array":
+        return elem.value.map((buffer) =>
+          buffer ? decoder.decode(buffer) : null,
+        );
+      default:
+        throw new ProtocolError("bad data type");
+    }
+  }
+
+  async mget(...args: string[]): Promise<(string | null)[]> {
+    const action = createAction(["MSET", ...args]);
+    const query = createQuery([action]);
+    const elem = await this.query(query);
+    switch (elem.kind) {
+      case "string_array":
+        return elem.value.map((buffer) =>
+          buffer ? decoder.decode(buffer) : null,
+        );
+      default:
+        throw new ProtocolError("bad data type");
+    }
+  }
+
+  async mksnap(snapname: string): Promise<boolean> {
+    const action = createAction(snapname ? ["MKSNAP", snapname] : ["MKSNAP"]);
+    const query = createQuery([action]);
+    const elem = await this.query(query);
+    switch (elem.kind) {
+      case "response_code":
+        return elem.code === 0;
+      default:
+        return false;
+    }
+  }
+
   async set(key: string, value: string): Promise<boolean> {
     const action = createAction(["SET", key, value]);
     const query = createQuery([action]);
