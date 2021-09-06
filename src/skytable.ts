@@ -32,7 +32,7 @@ export class Skytable {
   }
 
   async dbsize(entity?: string): Promise<number> {
-    const action = createAction(entity ? ["DBSIZE", entity] : ["DBSIZE"]);
+    const action = createAction(["DBSIZE", entity]);
     const query = createQuery([action]);
     const elem = await this.query(query);
     switch (elem.kind) {
@@ -68,7 +68,7 @@ export class Skytable {
   }
 
   async flushdb(entity?: string): Promise<true> {
-    const action = createAction(entity ? ["FLUSHDB", entity] : ["FLUSHDB"]);
+    const action = createAction(["FLUSHDB", entity]);
     const query = createQuery([action]);
     const elem = await this.query(query);
     switch (elem.kind) {
@@ -134,8 +134,8 @@ export class Skytable {
   async lskeys(limit: number): Promise<(string | null)[]>;
   async lskeys(entity: string): Promise<(string | null)[]>;
   async lskeys(entity: string, limit: number): Promise<(string | null)[]>;
-  async lskeys(...args: unknown[]): Promise<(string | null)[]> {
-    const action = createAction(["LSKEYS", ...args.map((s) => "" + s)]);
+  async lskeys(...args: (string | number)[]): Promise<(string | null)[]> {
+    const action = createAction(["LSKEYS", ...args]);
     const query = createQuery([action]);
     const elem = await this.query(query);
     switch (elem.kind) {
@@ -162,8 +162,8 @@ export class Skytable {
     }
   }
 
-  async mksnap(snapname: string): Promise<boolean> {
-    const action = createAction(snapname ? ["MKSNAP", snapname] : ["MKSNAP"]);
+  async mksnap(snapname?: string): Promise<boolean> {
+    const action = createAction(["MKSNAP", snapname]);
     const query = createQuery([action]);
     const elem = await this.query(query);
     switch (elem.kind) {
