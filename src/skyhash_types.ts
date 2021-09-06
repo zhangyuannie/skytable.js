@@ -44,4 +44,19 @@ export function createInt(value: string): SkyhashInt {
   return { kind: "int", value: +value };
 }
 
-export type SkyhashElement = SkyhashInt | SkyhashString | SkyhashResponseCode;
+export interface SkyhashStringArray {
+  kind: "string_array";
+  value: (Uint8Array | null)[];
+}
+
+export function createStringArray(
+  value: (Uint8Array | null)[],
+): SkyhashStringArray {
+  return { kind: "string_array", value };
+}
+
+export type SkyhashElement =
+  | SkyhashInt
+  | SkyhashString
+  | SkyhashResponseCode
+  | SkyhashStringArray;
