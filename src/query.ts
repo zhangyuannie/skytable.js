@@ -7,13 +7,15 @@ export type Query = string;
 export function createAction(
   arr: (string | number | undefined | null)[],
 ): Action {
-  return `~${arr.length}\n${arr
-    .map((elem) => {
-      if (elem == null) return "";
-      const s = "" + elem;
-      return `${s.length}\n${s}\n`;
-    })
-    .join("")}`;
+  return `~${arr.length}\n${
+    arr
+      .map((elem) => {
+        if (elem == null) return "";
+        const s = "" + elem;
+        return `${s.length}\n${s}\n`;
+      })
+      .join("")
+  }`;
 }
 
 export function createQuery(actions: Action[]): Query {

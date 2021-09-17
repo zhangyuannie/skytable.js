@@ -21,6 +21,14 @@ export class Skytable {
     });
   }
 
+  /**
+   * Closes the underlying tcp connection. If the connection is already closed,
+   * this method does nothing.
+   */
+  close(): void {
+    this.#conn.end();
+  }
+
   async query(query: Query) {
     await new Promise<void>((resolve, reject) => {
       this.#conn.write(query, (e) => {
@@ -141,7 +149,7 @@ export class Skytable {
     switch (elem.kind) {
       case "string_array":
         return elem.value.map((buffer) =>
-          buffer ? decoder.decode(buffer) : null,
+          buffer ? decoder.decode(buffer) : null
         );
       default:
         throw new ProtocolError("bad data type");
@@ -155,7 +163,7 @@ export class Skytable {
     switch (elem.kind) {
       case "string_array":
         return elem.value.map((buffer) =>
-          buffer ? decoder.decode(buffer) : null,
+          buffer ? decoder.decode(buffer) : null
         );
       default:
         throw new ProtocolError("bad data type");
