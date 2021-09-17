@@ -1,21 +1,16 @@
 import { createAction, createQuery, Query } from "./query";
-import { createConnection, Socket } from "net";
+import type { Socket } from "net";
 import { BufferParser } from "./_parser";
 import { NotImplementedError, ProtocolError, SkyhashError } from "./errors";
 import { ResponseCodeNumber } from "./skyhash_types";
 import { decoder } from "./_util";
 
-export interface ConnectOptions {
-  port?: number;
-  hostname?: string;
-}
-
 export class Skytable {
   #conn: Socket;
   #parser = new BufferParser();
 
-  constructor({ port = 2003, hostname = "127.0.0.1" }: ConnectOptions = {}) {
-    this.#conn = createConnection({ port, host: hostname });
+  constructor(conn: Socket) {
+    this.#conn = conn;
     this.#conn.on("data", (data) => {
       this.#parser.push(data);
     });

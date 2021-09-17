@@ -16,8 +16,8 @@ $ npm install skytable.js
 ## Basic usage
 
 ```js
-import { Skytable } from "skytable.js";
-const skytable = new Skytable();
+import { connect } from "skytable.js";
+const skytable = await connect();
 
 skytable.set("foo", "bar");
 ```
