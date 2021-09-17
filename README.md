@@ -7,7 +7,7 @@ Node.js driver for [Skytable](https://github.com/skytable/skytable). WIP
 
 ## Installation
 
-Make sure to have Skytable >= 0.7 and Node.js >= 12 installed.
+Make sure to have Skytable >= 0.7 and Node.js >= 14 installed.
 
 ```
 $ npm install skytable.js
