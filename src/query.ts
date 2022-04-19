@@ -37,7 +37,7 @@ export function createAnyArray(arr: (string | number)[]): AnyArray {
   });
 
   const head = `~${arr.length}\n`;
-  let ret = new Uint8Array(size + head.length);
+  const ret = new Uint8Array(size + head.length);
   encoder.encodeInto(head, ret);
   let idx = head.length;
 

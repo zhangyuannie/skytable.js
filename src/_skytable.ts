@@ -24,7 +24,7 @@ export class Skytable {
     this.#conn.end();
   }
 
-  async query(query: Query): Promise<SkyhashElement> {
+  query(query: Query): Promise<SkyhashElement> {
     return new Promise((resolve, reject) => {
       this.#conn.write(query, (e) => {
         if (e) {
@@ -38,7 +38,7 @@ export class Skytable {
 
   async dbsize(entity?: string): Promise<Integer> {
     const action = createAction(
-      entity == null ? ["DBSIZE"] : ["DBSIZE", entity]
+      entity == null ? ["DBSIZE"] : ["DBSIZE", entity],
     );
     const query = createQuery([action]);
     const elem = await this.query(query);
@@ -76,7 +76,7 @@ export class Skytable {
 
   async flushdb(entity?: string): Promise<void> {
     const action = createAction(
-      entity == null ? ["FLUSHDB"] : ["FLUSHDB", entity]
+      entity == null ? ["FLUSHDB"] : ["FLUSHDB", entity],
     );
     const query = createQuery([action]);
     const elem = await this.query(query);
@@ -173,7 +173,7 @@ export class Skytable {
 
   async mksnap(snapname?: string): Promise<boolean> {
     const action = createAction(
-      snapname == null ? ["MKSNAP"] : ["MKSNAP", snapname]
+      snapname == null ? ["MKSNAP"] : ["MKSNAP", snapname],
     );
     const query = createQuery([action]);
     const elem = await this.query(query);
@@ -227,7 +227,7 @@ export class Skytable {
   async uset(key: string, value: string): Promise<Integer>;
   async uset(
     a: [key: string, value: string][] | string,
-    b?: string
+    b?: string,
   ): Promise<Integer> {
     const action = b
       ? createAction(["USET", a as string, b])
