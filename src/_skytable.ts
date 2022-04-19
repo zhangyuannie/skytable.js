@@ -1,8 +1,8 @@
 import { createAction, createQuery, Query } from "./query";
 import type { Socket } from "net";
 import { BufferParser } from "./_parser";
-import { NotImplementedError, ProtocolError, SkyhashError } from "./errors";
-import { ResponseCodeNumber } from "./skyhash_types";
+import { ProtocolError, SkyhashError } from "./errors";
+import { ResponseCodeNumber, SkyhashElement } from "./skyhash_types";
 import { decoder, Integer } from "./_util";
 
 export class Skytable {
@@ -24,14 +24,16 @@ export class Skytable {
     this.#conn.end();
   }
 
-  async query(query: Query) {
-    await new Promise<void>((resolve, reject) => {
+  async query(query: Query): Promise<SkyhashElement> {
+    return new Promise((resolve, reject) => {
       this.#conn.write(query, (e) => {
-        if (e) reject(new NotImplementedError("Socket write error handling"));
-        resolve();
+        if (e) {
+          reject(e);
+        } else {
+          resolve(this.#parser.getResponse());
+        }
       });
     });
-    return this.#parser.getResponse();
   }
 
   async dbsize(entity?: string): Promise<Integer> {
