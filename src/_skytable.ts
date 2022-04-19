@@ -72,7 +72,7 @@ export class Skytable {
     }
   }
 
-  async flushdb(entity?: string): Promise<true> {
+  async flushdb(entity?: string): Promise<void> {
     const action = createAction(
       entity == null ? ["FLUSHDB"] : ["FLUSHDB", entity]
     );
@@ -82,7 +82,7 @@ export class Skytable {
       case "response_code":
         switch (elem.code) {
           case ResponseCodeNumber.Okay:
-            return true;
+            return;
           default:
             throw new SkyhashError(elem.code);
         }
