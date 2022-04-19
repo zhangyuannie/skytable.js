@@ -3,7 +3,7 @@ import type { Socket } from "net";
 import { BufferParser } from "./_parser";
 import { NotImplementedError, ProtocolError, SkyhashError } from "./errors";
 import { ResponseCodeNumber } from "./skyhash_types";
-import { decoder } from "./_util";
+import { decoder, Integer } from "./_util";
 
 export class Skytable {
   #conn: Socket;
@@ -34,7 +34,7 @@ export class Skytable {
     return this.#parser.getResponse();
   }
 
-  async dbsize(entity?: string): Promise<number> {
+  async dbsize(entity?: string): Promise<Integer> {
     const action = createAction(["DBSIZE", entity]);
     const query = createQuery([action]);
     const elem = await this.query(query);
@@ -46,7 +46,7 @@ export class Skytable {
     }
   }
 
-  async del(...keys: string[]): Promise<number> {
+  async del(...keys: string[]): Promise<Integer> {
     const action = createAction(["DEL", ...keys]);
     const query = createQuery([action]);
     const elem = await this.query(query);
@@ -58,7 +58,7 @@ export class Skytable {
     }
   }
 
-  async exists(...keys: string[]): Promise<number> {
+  async exists(...keys: string[]): Promise<Integer> {
     const action = createAction(["EXISTS", ...keys]);
     const query = createQuery([action]);
     const elem = await this.query(query);
@@ -117,7 +117,7 @@ export class Skytable {
     }
   }
 
-  async keylen(key: string): Promise<number | undefined> {
+  async keylen(key: string): Promise<Integer | undefined> {
     const action = createAction(["KEYLEN", key]);
     const query = createQuery([action]);
     const elem = await this.query(query);
@@ -134,10 +134,10 @@ export class Skytable {
     }
   }
 
-  async lskeys(limit: number): Promise<(string | null)[]>;
+  async lskeys(limit: Integer): Promise<(string | null)[]>;
   async lskeys(entity: string): Promise<(string | null)[]>;
-  async lskeys(entity: string, limit: number): Promise<(string | null)[]>;
-  async lskeys(...args: (string | number)[]): Promise<(string | null)[]> {
+  async lskeys(entity: string, limit: Integer): Promise<(string | null)[]>;
+  async lskeys(...args: (string | Integer)[]): Promise<(string | null)[]> {
     const action = createAction(["LSKEYS", ...args]);
     const query = createQuery([action]);
     const elem = await this.query(query);
@@ -215,12 +215,12 @@ export class Skytable {
     }
   }
 
-  async uset(pairs: [key: string, value: string][]): Promise<number>;
-  async uset(key: string, value: string): Promise<number>;
+  async uset(pairs: [key: string, value: string][]): Promise<Integer>;
+  async uset(key: string, value: string): Promise<Integer>;
   async uset(
     a: [key: string, value: string][] | string,
     b?: string
-  ): Promise<number> {
+  ): Promise<Integer> {
     const action = b
       ? createAction(["USET", a as string, b])
       : createAction(["USET", ...(a as [key: string, value: string][]).flat()]);
