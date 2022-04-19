@@ -104,14 +104,14 @@ export class Skytable {
     }
   }
 
-  async heya(): Promise<true> {
-    const elem = await this.query(createQuery([createAction(["HEYA"])]));
+  async heya(message?: string): Promise<string> {
+    const action = createQuery([
+      createAction(message == null ? ["HEYA"] : ["HEYA", message]),
+    ]);
+    const elem = await this.query(action);
     switch (elem.kind) {
       case "string":
-        if (decoder.decode(elem.value) !== "HEY!") {
-          throw new ProtocolError(`Expected 'HEY!' but received ${elem.value}`);
-        }
-        return true;
+        return decoder.decode(elem.value);
       default:
         throw new ProtocolError("bad data type");
     }
@@ -219,7 +219,7 @@ export class Skytable {
   async uset(key: string, value: string): Promise<number>;
   async uset(
     a: [key: string, value: string][] | string,
-    b?: string,
+    b?: string
   ): Promise<number> {
     const action = b
       ? createAction(["USET", a as string, b])
