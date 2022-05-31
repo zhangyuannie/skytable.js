@@ -157,8 +157,8 @@ export class Skytable {
     }
   }
 
-  async mget(...args: string[]): Promise<(string | null)[]> {
-    const action = createAction(["MSET", ...args]);
+  async mget(...keys: string[]): Promise<(string | null)[]> {
+    const action = createAction(["MGET", ...keys]);
     const query = createQuery([action]);
     const elem = await this.query(query);
     switch (elem.kind) {
