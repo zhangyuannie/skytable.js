@@ -171,6 +171,26 @@ export class Skytable {
     }
   }
 
+  async mset(pairs: [key: string, value: string][]): Promise<Integer>;
+  async mset(key: string, value: string): Promise<Integer>;
+  async mset(
+    a: [key: string, value: string][] | string,
+    b?: string,
+  ): Promise<Integer> {
+    const action = b
+      ? createAction(["MSET", a as string, b])
+      : createAction(["MSET", ...(a as [key: string, value: string][]).flat()]);
+    const query = createQuery([action]);
+    const elem = await this.query(query);
+
+    switch (elem.kind) {
+      case "int":
+        return elem.value;
+      default:
+        throw new ProtocolError("bad data type");
+    }
+  }
+
   async mksnap(snapname?: string): Promise<boolean> {
     const action = createAction(
       snapname == null ? ["MKSNAP"] : ["MKSNAP", snapname],
